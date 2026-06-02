@@ -3,9 +3,11 @@ load_dotenv()
 
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_mistralai.chat_models import ChatMistralAI
 from langchain.messages import HumanMessage,AIMessage
 
-model = ChatGoogleGenerativeAI(model = "gemini-2.5-flash")
+
+model = ChatMistralAI(model ="mistral-small-latest")
 
 messages = []
 
