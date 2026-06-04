@@ -94,6 +94,97 @@ cd lc-chatbot
 pip install -r requirements.txt
 python main.py
 ```
+## 🟣 AI-Tools
+
+Exploring **LangChain Tools, LLM hallucinations, and tool calling workflows** using Mistral.
+
+This module demonstrates how to overcome one of the biggest limitations of LLMs — **lack of real-time awareness** — by integrating external tools.
+
+---
+
+### ❗ Problem: LLM Hallucination
+
+LLMs like Mistral:
+
+* Do **not know real-time data**
+* Can generate **incorrect or guessed answers**
+
+Example:
+
+```python
+model.invoke("What is today's date?")
+```
+
+➡️ May return a **wrong date**
+
+---
+
+### ✅ Solution: Tool Integration
+
+We define a tool to fetch real-time data:
+
+```python
+from langchain.tools import tool
+from datetime import date
+
+@tool
+def getCurrentDate():
+    """Returns current date"""
+    return str(date.today())
+```
+
+---
+
+### ⚙️ Tool Calling with Mistral
+
+Bind tool to model:
+
+```python
+model = ChatMistralAI(model="mistral-small").bind_tools([getCurrentDate])
+```
+
+---
+
+### 🔁 Execution Flow
+
+```python
+response = model.invoke("today's date ?")
+
+tool_result = getCurrentDate.invoke(response.tool_calls[0]["args"])
+
+final_response = model.invoke(
+    ["Human:- Today's Date", "Tool result := " + tool_result]
+)
+
+print(final_response.text)
+```
+
+---
+
+### 🔄 How It Works
+
+1. User asks a question
+2. LLM decides to call a tool
+3. Tool executes (`getCurrentDate`)
+4. Result is passed back to LLM
+5. LLM generates **accurate final answer**
+
+---
+
+### 🎯 Key Learnings
+
+* Tools solve **hallucination for dynamic data**
+* LLM + Tools = **more reliable systems**
+* This is the foundation of **AI agents**
+
+---
+
+### 📌 Future Scope
+
+* Automate tool execution loop
+* Add multiple tools
+* Build full agent using `AgentExecutor`
+
 
 ---
 
